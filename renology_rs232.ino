@@ -1,6 +1,6 @@
 /*
 
-Effin works! Reads from the Renology charge controller. 
+
 
 See my post here for wiring diagram and notes: https://forum.arduino.cc/t/trying-to-read-registers-from-a-solar-charge-controller-over-rs232-solved/1039864/11
 
