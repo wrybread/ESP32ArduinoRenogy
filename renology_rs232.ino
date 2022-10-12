@@ -1,12 +1,13 @@
 /*
 
-
+Reads the data from the Renology charge controller. Tested with Wanderer 30A (CTRL-WND30-LI)
 
 See my post here for wiring diagram and notes: https://forum.arduino.cc/t/trying-to-read-registers-from-a-solar-charge-controller-over-rs232-solved/1039864/11
 
 
 To do:
 - make a "turn on load" function with the other charge controller, which I think supports it
+- other registers? Go through Renogy manual
 
 */
 
@@ -22,55 +23,60 @@ ModbusMaster node;
 
 // Number of registers to check. I think all Renogy controlls have 30
 // data registers (not all of which are used) and 17 info registers.
-int num_data_registers = 30;
-int num_info_registers = 17;
+const uint32_t num_data_registers = 30;
+const uint32_t num_info_registers = 17;
 
 
 struct Controller_data {
-  float percent_battery_capacity;  // percent
+  
+  uint8_t percent_battery_capacity;  // percent
   float battery_voltage;           // volts
   float battery_charge_current;    // amps
-  float battery_temperature;       // celcius
-  float controller_temperature;    // celcius
+  uint8_t battery_temperature;       // celcius
+  uint8_t controller_temperature;    // celcius
   float load_voltage;              // volts
   float load_current;              // amps
-  float load_power;                // watts
+  uint8_t load_power;                // watts
   float solar_panel_voltage;       // volts
   float solar_panel_current;       // amps
-  float solar_panel_power;         // watts
+  uint8_t solar_panel_power;         // watts
   float min_battery_voltage_today; // volts
   float max_battery_voltage_today; // volts
   float max_charge_current_today;  // amps
   float max_discharge_current_today; // amps
-  float max_charge_power_today;    // watts
-  float max_discharge_power_today; // watts
-  float charge_amphours_today;     // amp hours
-  float discharge_amphours_today;  // amp hours
-  float charge_watthours_today;    // watt hours
-  float discharge_watthours_today; // watt hours
-  float controller_uptime;         // days
-  float total_battery_overcharges; // count
-  float total_battery_fullcharges; // count
+  uint8_t max_charge_power_today;    // watts
+  uint8_t max_discharge_power_today; // watts
+  uint8_t charge_amphours_today;     // amp hours
+  uint8_t discharge_amphours_today;  // amp hours
+  uint8_t charge_watthours_today;    // watt hours
+  uint8_t discharge_watthours_today; // watt hours
+  uint8_t controller_uptime;         // days
+  uint8_t total_battery_overcharges; // count
+  uint8_t total_battery_fullcharges; // count
+
   long last_update_millis;
 };
 Controller_data renology_data;
 
 struct Controller_info {
-  float controller_voltage_rating; // volts
-  float controller_current_rating; // amps
-  float controller_discharge_current_rating; // amps
-  float controller_type;
-  float controller_name;
-  float controller_software_version;
-  float controller_hardware_version;
-  float controller_serial_number;
-  float controller_modbus_address;  
+  
+  uint8_t voltage_rating; // volts
+  uint8_t current_rating; // amps
+  uint8_t discharge_current_rating; // amps
+  uint8_t type;
+  uint8_t controller_name;
+  char software_version[40];
+  char hardware_version[40];
+  char serial_number[40];
+  uint8_t modbus_address;  
   long last_update_millis;
 
 };
 Controller_info renology_info;
 
 
+uint16_t data_registers[num_data_registers];
+uint16_t info_registers[num_info_registers];
 
 
 
@@ -92,20 +98,36 @@ void setup()
 
 void loop()
 {
-  
   static uint32_t i;
-  uint8_t j, result;
-  uint16_t data_registers[num_data_registers];
-  uint16_t info_registers[num_info_registers];
-  
   i++;
   
   // set word 0 of TX buffer to least-significant word of counter (bits 15..0)
   node.setTransmitBuffer(0, lowWord(i));  
   // set word 1 of TX buffer to most-significant word of counter (bits 31..16)
   node.setTransmitBuffer(1, highWord(i));
-    
 
+  read_renogy_data_registers();
+  Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
+    
+  read_renogy_info_registers();
+
+  delay(5000);
+
+}
+
+
+
+
+
+
+
+
+void read_renogy_data_registers() {
+
+  uint8_t j, result;
+  char buffer1[40], buffer2[40];
+  uint8_t raw_data;
+  
   //////////////////////////////
   // Read the 30 data registers
   //////////////////////////////
@@ -122,22 +144,15 @@ void loop()
     // read the params into the struct
     renology_data.percent_battery_capacity = data_registers[0]; 
     renology_data.battery_voltage = data_registers[1] * .1; // will it crash if data_registers[1] doesn't exist?
-
     renology_data.battery_charge_current = data_registers[2] * .1;
     
     //0x103 returns two bytes, one for battery and one for controller temp in c
-    // here's the javascript code:
-    /*
-    const buf = Buffer.alloc(2)
-    buf.writeInt16BE(data_registers[3]);
-    this.battT = buf[0];
-    this.controlT = buf[1];
-    */
+    uint16_t raw_data = data_registers[3]; // eg 5913
+    renology_data.controller_temperature = raw_data/100;
+    renology_data.battery_temperature = raw_data%100; 
+    Serial.println("controller_temperature=" + String(renology_data.controller_temperature)); 
+    Serial.println("battery_temperature=" + String(renology_data.battery_temperature)); 
 
-    int battery_temperatures_raw =  data_registers[3];
-    //renology_data.battery_temperatures = data_registers[3] * .01;
-    //renology_data.controller_temperature;
-    
     renology_data.load_voltage = data_registers[4] * .1;
     renology_data.load_current = data_registers[5] * .01;
     renology_data.load_power = data_registers[6];
@@ -168,8 +183,8 @@ void loop()
     //Registers 0x121 to 0x122 - Controller fault codes - 33/34
     //TODO: More registers    
 
-    Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
-    Serial.println("Temperature = " + String(battery_temperatures_raw));
+    //Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
+    //Serial.println("Temperature = " + String(battery_temperatures_raw));
 
     Serial.println("---");
   }
@@ -181,7 +196,15 @@ void loop()
     Serial.println(result, HEX); // E2 is timeout
   }
 
+}
 
+
+void read_renogy_info_registers() {
+
+  uint8_t j, result;
+  char buffer1[40], buffer2[40];
+  uint8_t raw_data;
+  
   //////////////////////////////
   // Read the 17 info registers
   //////////////////////////////
@@ -194,6 +217,58 @@ void loop()
       info_registers[j] = node.getResponseBuffer(j);
       Serial.println(info_registers[j]);
     }
+
+    // read the params into the struct %%
+    //Register 0x0A - Controller voltage and Current Rating - 0
+    raw_data = info_registers[0]; 
+    renology_info.voltage_rating = raw_data/100;
+    renology_info.current_rating = raw_data%100; 
+
+    //Register 0x0B - Controller discharge current and type - 1
+    raw_data = info_registers[1]; 
+    renology_info.discharge_current_rating = raw_data/100;
+    renology_info.type = raw_data%100; 
+
+    //Registers 0x0C to 0x13 - Product Model String - 2-9
+    // Here's how the nodeJS project handled this:
+    /*
+    let modelString = '';
+    for (let i = 0; i <= 7; i++) {  
+        rawData[i+2].toString(16).match(/.{1,2}/g).forEach( x => {
+            modelString += String.fromCharCode(parseInt(x, 16));
+        });
+    }
+    this.controllerModel = modelString.replace(' ','');
+    */
+
+    //Registers 0x014 to 0x015 - Software Version - 10-11
+    itoa(info_registers[10],buffer1,10); 
+    itoa(info_registers[11],buffer2,10);
+    strcat(buffer1, buffer2); // should put a divider between the two strings?
+    strcpy(renology_info.software_version, buffer1); 
+    Serial.println("Software version: " + String(renology_info.software_version));
+
+
+    //Registers 0x016 to 0x017 - Hardware Version - 12-13
+    itoa(info_registers[12],buffer1,10); 
+    itoa(info_registers[13],buffer2,10);
+    strcat(buffer1, buffer2); // should put a divider between the two strings?
+    strcpy(renology_info.hardware_version, buffer1);
+    Serial.println("Hardware version: " + String(renology_info.hardware_version));
+
+
+    //Registers 0x018 to 0x019 - Product Serial Number - 14-15
+    itoa(info_registers[14],buffer1,10); 
+    itoa(info_registers[15],buffer2,10);
+    strcat(buffer1, buffer2); // should put a divider between the two strings?
+    strcpy(renology_info.serial_number, buffer1);
+    Serial.println("Serial number: " + String(renology_info.serial_number));
+
+
+    renology_info.modbus_address = data_registers[16];
+    Serial.println("Modbus address: " + String(renology_info.modbus_address));
+    renology_info.last_update_millis = millis();
+  
     Serial.println("---");
     Serial.println();
   }
@@ -204,7 +279,4 @@ void loop()
     Serial.print("Failed to read the info registers... ");
     Serial.println(result, HEX); // E2 is timeout
   }
-
-  delay(5000);
-
 }
