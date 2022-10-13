@@ -3,6 +3,7 @@
 Reads the data from the Renology charge controller. Tested with Wanderer 30A (CTRL-WND30-LI)
 
 See my post here for wiring diagram and notes: https://forum.arduino.cc/t/trying-to-read-registers-from-a-solar-charge-controller-over-rs232-solved/1039864/11
+(Remember that a RS232 to TTL shifter is required)
 
 
 To do:
@@ -10,9 +11,13 @@ To do:
 - other registers? Go through Renogy manual
 - confirm temperature values once I have the battery temperature sensor
 - verify that the info we're getting from the info registers is being processed correctly. The serial number for example doesn't match the serial number printed on the controller.
-- confirm that the Renology 10amp works, and compare the values to the ones reported on the LCD screen
+- confirm that the Renology 10amp works, and compare the values to the ones shown on the screen
 
 - can I use the load to power the bilge pump? Or is that just for lights?
+
+- get folks to test with other ESP32's?
+- eventually get bluetooth bridge working, like Renogy's BT module?
+- test on an Arduino
 
 
 */
@@ -23,9 +28,16 @@ ModbusMaster node;
 
 
 
-// Pins used by ESP32 for the 2nd serial port. Not possible to have a second serial port on some Arduinos
-#define RXD2 16 // aka "RX2" on some ESP32 devboards
-#define TXD2 17 // aka "TX2" on some ESP32 devboards
+
+
+/*
+A note about which pins to use: 
+- I was originally using pin 17 (aka RX2 on some ESP32 devboards) for RX and 18 (aka Tx2) for TX, 
+which worked on an ESP32 Wroom but not an ESP32 Rover. So I switched to pins 13 and 14, which works for both.
+I haven't tested on an Arduino board though.
+*/
+#define RXD2 13
+#define TXD2 14
 
 // Number of registers to check. I think all Renogy controlls have 30
 // data registers (not all of which are used) and 17 info registers.
@@ -93,6 +105,7 @@ void setup()
 
   // create a second serial interface for modbus
   Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
+  //MySerial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
 
   int modbus_address = 255; // my Renogy Wanderer has an (slave) address of 255! Not in docs???
   node.begin(modbus_address, Serial2); 
