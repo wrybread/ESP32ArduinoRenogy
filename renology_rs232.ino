@@ -8,6 +8,12 @@ See my post here for wiring diagram and notes: https://forum.arduino.cc/t/trying
 To do:
 - make a "turn on load" function with the other charge controller, which I think supports it
 - other registers? Go through Renogy manual
+- confirm temperature values once I have the battery temperature sensor
+- verify that the info we're getting from the info registers is being processed correctly. The serial number for example doesn't match the serial number printed on the controller.
+- confirm that the Renology 10amp works, and compare the values to the ones reported on the LCD screen
+
+- can I use the load to power the bilge pump? Or is that just for lights?
+
 
 */
 
@@ -17,9 +23,9 @@ ModbusMaster node;
 
 
 
-// Pins used by ESP32 for the 2nd serial port. Not possible on all Arduinos.
-#define RXD2 16
-#define TXD2 17
+// Pins used by ESP32 for the 2nd serial port. Not possible to have a second serial port on some Arduinos
+#define RXD2 16 // aka "RX2" on some ESP32 devboards
+#define TXD2 17 // aka "TX2" on some ESP32 devboards
 
 // Number of registers to check. I think all Renogy controlls have 30
 // data registers (not all of which are used) and 17 info registers.
@@ -30,19 +36,19 @@ const uint32_t num_info_registers = 17;
 struct Controller_data {
   
   uint8_t percent_battery_capacity;  // percent
-  float battery_voltage;           // volts
-  float battery_charge_current;    // amps
+  float battery_voltage;             // volts
+  float battery_charge_current;      // amps
   uint8_t battery_temperature;       // celcius
   uint8_t controller_temperature;    // celcius
-  float load_voltage;              // volts
-  float load_current;              // amps
+  float load_voltage;                // volts
+  float load_current;                // amps
   uint8_t load_power;                // watts
-  float solar_panel_voltage;       // volts
-  float solar_panel_current;       // amps
+  float solar_panel_voltage;         // volts
+  float solar_panel_current;         // amps
   uint8_t solar_panel_power;         // watts
-  float min_battery_voltage_today; // volts
-  float max_battery_voltage_today; // volts
-  float max_charge_current_today;  // amps
+  float min_battery_voltage_today;   // volts
+  float max_battery_voltage_today;   // volts
+  float max_charge_current_today;    // amps
   float max_discharge_current_today; // amps
   uint8_t max_charge_power_today;    // watts
   uint8_t max_discharge_power_today; // watts
@@ -60,9 +66,9 @@ Controller_data renology_data;
 
 struct Controller_info {
   
-  uint8_t voltage_rating; // volts
-  uint8_t current_rating; // amps
-  uint8_t discharge_current_rating; // amps
+  uint8_t voltage_rating;            // volts
+  uint8_t current_rating;            // amps
+  uint8_t discharge_current_rating;  // amps
   uint8_t type;
   uint8_t controller_name;
   char software_version[40];
@@ -75,8 +81,6 @@ struct Controller_info {
 Controller_info renology_info;
 
 
-uint16_t data_registers[num_data_registers];
-uint16_t info_registers[num_info_registers];
 
 
 
@@ -88,7 +92,7 @@ void setup()
   Serial.println("Started!");
 
   // create a second serial interface for modbus
-  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); // is SERIAL_8N1 correct?
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2); 
 
   int modbus_address = 255; // my Renogy Wanderer has an (slave) address of 255! Not in docs???
   node.begin(modbus_address, Serial2); 
@@ -125,6 +129,7 @@ void loop()
 void read_renogy_data_registers() {
 
   uint8_t j, result;
+  uint16_t data_registers[num_data_registers];
   char buffer1[40], buffer2[40];
   uint8_t raw_data;
   
@@ -141,12 +146,13 @@ void read_renogy_data_registers() {
       Serial.println(data_registers[j]);
     }
 
-    // read the params into the struct
+    // process each register
     renology_data.percent_battery_capacity = data_registers[0]; 
     renology_data.battery_voltage = data_registers[1] * .1; // will it crash if data_registers[1] doesn't exist?
     renology_data.battery_charge_current = data_registers[2] * .1;
     
     //0x103 returns two bytes, one for battery and one for controller temp in c
+    // I'm definitely not sure about these readings, they're erratic and super high
     uint16_t raw_data = data_registers[3]; // eg 5913
     renology_data.controller_temperature = raw_data/100;
     renology_data.battery_temperature = raw_data%100; 
@@ -202,6 +208,7 @@ void read_renogy_data_registers() {
 void read_renogy_info_registers() {
 
   uint8_t j, result;
+  uint16_t info_registers[num_info_registers];
   char buffer1[40], buffer2[40];
   uint8_t raw_data;
   
@@ -218,7 +225,7 @@ void read_renogy_info_registers() {
       Serial.println(info_registers[j]);
     }
 
-    // read the params into the struct %%
+    // read and process each value
     //Register 0x0A - Controller voltage and Current Rating - 0
     raw_data = info_registers[0]; 
     renology_info.voltage_rating = raw_data/100;
@@ -265,7 +272,7 @@ void read_renogy_info_registers() {
     Serial.println("Serial number: " + String(renology_info.serial_number));
 
 
-    renology_info.modbus_address = data_registers[16];
+    renology_info.modbus_address = info_registers[16];
     Serial.println("Modbus address: " + String(renology_info.modbus_address));
     renology_info.last_update_millis = millis();
   
