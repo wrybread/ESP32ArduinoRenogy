@@ -253,13 +253,13 @@ void read_renogy_info_registers()
     // read and process each value
     //Register 0x0A - Controller voltage and Current Rating - 0
     raw_data = info_registers[0]; 
-    renology_info.voltage_rating = raw_data/100;
-    renology_info.current_rating = raw_data%100; 
+    renology_info.voltage_rating = raw_data/256; // not sure if this should be /256 or /100
+    renology_info.current_rating = raw_data%256; // not sure if this should be /256 or /100
 
     //Register 0x0B - Controller discharge current and type - 1
     raw_data = info_registers[1]; 
-    renology_info.discharge_current_rating = raw_data/100;
-    renology_info.type = raw_data%100; 
+    renology_info.discharge_current_rating = raw_data/256; // not sure if this should be /256 or /100
+    renology_info.type = raw_data%256; // not sure if this should be /256 or /100
 
     //Registers 0x0C to 0x13 - Product Model String - 2-9
     // Here's how the nodeJS project handled this:
