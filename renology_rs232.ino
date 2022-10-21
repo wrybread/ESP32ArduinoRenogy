@@ -8,14 +8,12 @@ See my post here for wiring diagram and notes: https://forum.arduino.cc/t/trying
 
 To do:
 - make a "turn on load" function with the other charge controller, which I think supports it
-- other registers? Go through Renogy manual
-- confirm temperature values once I have the battery temperature sensor
 - verify that the info we're getting from the info registers is being processed correctly. The serial number for example doesn't match the serial number printed on the controller.
 - confirm that the Renology 10amp works, and compare the values to the ones shown on the screen
 
 - can I use the load to power the bilge pump? Or is that just for lights?
 
-- get folks to test with other ESP32's?
+- get folks to test with other Renogy controllers
 - eventually get bluetooth bridge working, like Renogy's BT module?
 - test on an Arduino
 
@@ -124,11 +122,13 @@ void loop()
   node.setTransmitBuffer(1, highWord(i));
 
   read_renogy_data_registers();
-  Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
-    
   read_renogy_info_registers();
 
-  delay(5000);
+  Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
+  Serial.println("controller_temperature=" + String(renology_data.controller_temperature)); 
+  Serial.println("battery_temperature=" + String(renology_data.battery_temperature)); 
+    
+  delay(1000); 
 
 }
 
@@ -139,12 +139,19 @@ void loop()
 
 
 
-void read_renogy_data_registers() {
+void read_renogy_data_registers() 
+{
 
   uint8_t j, result;
   uint16_t data_registers[num_data_registers];
   char buffer1[40], buffer2[40];
   uint8_t raw_data;
+
+  // default values (in case we don't get a reading, etc)
+  renology_data.battery_voltage = 0;
+  renology_data.battery_charge_current = 0;
+  // anything else to reset?
+  
   
   //////////////////////////////
   // Read the 30 data registers
@@ -165,12 +172,9 @@ void read_renogy_data_registers() {
     renology_data.battery_charge_current = data_registers[2] * .1;
     
     //0x103 returns two bytes, one for battery and one for controller temp in c
-    // I'm definitely not sure about these readings, they're erratic and super high
     uint16_t raw_data = data_registers[3]; // eg 5913
-    renology_data.controller_temperature = raw_data/100;
-    renology_data.battery_temperature = raw_data%100; 
-    Serial.println("controller_temperature=" + String(renology_data.controller_temperature)); 
-    Serial.println("battery_temperature=" + String(renology_data.battery_temperature)); 
+    renology_data.controller_temperature = raw_data/256;
+    renology_data.battery_temperature = raw_data%256; 
 
     renology_data.load_voltage = data_registers[4] * .1;
     renology_data.load_current = data_registers[5] * .01;
@@ -207,18 +211,26 @@ void read_renogy_data_registers() {
 
     Serial.println("---");
   }
-  else if (result == 0xE2) {
+  else 
+  {
+    if (result == 0xE2) 
+    {
     Serial.println("Timed out reading the data registers!");
-  }
-  else {
-    Serial.print("Failed to read the data registers... ");
-    Serial.println(result, HEX); // E2 is timeout
+    }
+    else 
+    {
+      Serial.print("Failed to read the data registers... ");
+      Serial.println(result, HEX); // E2 is timeout
+    }
+    // set voltage to 0 if we can't read from the controller. Reset anything else?
+    //renology_data.battery_voltage = 0;
   }
 
 }
 
 
-void read_renogy_info_registers() {
+void read_renogy_info_registers() 
+{
 
   uint8_t j, result;
   uint16_t info_registers[num_info_registers];
@@ -292,11 +304,18 @@ void read_renogy_info_registers() {
     Serial.println("---");
     Serial.println();
   }
-  else if (result == 0xE2) {
-    Serial.println("Timed out reading the info registers!");
+  else
+  {
+    if (result == 0xE2) 
+    {
+      Serial.println("Timed out reading the info registers!");
+    }
+    else 
+    {
+      Serial.print("Failed to read the info registers... ");
+      Serial.println(result, HEX); // E2 is timeout
+    }
+    // anything else to do if we fail to read the info registers?
   }
-  else {
-    Serial.print("Failed to read the info registers... ");
-    Serial.println(result, HEX); // E2 is timeout
-  }
+
 }
