@@ -10,19 +10,22 @@ Here's a pic of my installation:
 
 ## Making the Cable
 
-You'll need make a cable to connect it to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't only have 4 pins.
-
-[pic of cable]
-
-You'll also need a TTL to RS232 level adjuster. I used this one:
-
-https://www.amazon.com/dp/B07BJJ3TZR
-
-If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual Conversion Module", costs $7.
-
 Here's a wiring diagram:
 
 [wiring diagram]
+
+![wiring diagram](https://sinkingsensation.com/stuff/renogy/wiring_diagram.jpg)
+
+You'll need make a cable to connect the controller to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't only have 4 pins.
+
+[pic of cable]
+
+You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.amazon.com/dp/B07BJJ3TZR]:
+
+[pic of converter]
+
+If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual Conversion Module", costs $7.
+
 
 That shows the colored wires from my RJ12 cable. I don't know how standard the wire colors are on those, here's a pic of my jack:
 
@@ -46,6 +49,22 @@ https://www.amazon.com/gp/product/B08H89LTP5
 - for the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load pins:
 
 [screenshot of load pins]
+
+## See Also
+
+There's a couple of other projects that get data from the Renogy charge controllers. Oddly I couldn't find anything that uses an ESP32 or Arduino though.
+
+- here's a NodeJS project
+
+- here's a pure javascript project
+
+Much thanks to them! They made this much easier.
+
+I also attached Renogy's manual, it's somewhat helpful if you squint at it long enough.
+
+
+
+
 
 
 
