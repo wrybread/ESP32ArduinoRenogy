@@ -2,7 +2,7 @@
 
 This lets you get data from Renogy charge controllers via their RS232 port using an ESP32 or Arduino. 
 
-The inspiration came when I needed to power a pump at a remote pond to keep a cow trough full once an hour if the solar panel was producing sufficient power. I was surprised that the Renogy controllers don't have that ability natively, they only let me power a load at night. This overcomes that overly narrow use case, and doesn't require anything relatively heavy like a Raspberry Pi.
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me easily overcome that narrow use case, and generally makes Renogy charge controllers super powerful. And without using something relatively heavy like a Raspberry Pi.
 
 Here's a pic of my installation:
 
