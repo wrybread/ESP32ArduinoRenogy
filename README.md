@@ -14,25 +14,19 @@ Here's a wiring diagram:
 
 [wiring diagram]
 
-![wiring diagram](https://sinkingsensation.com/stuff/renogy/wiring_diagram.jpg)
+![wiring diagram](https://sinkingsensation.com/stuff/renogy/wiring.jpg)
 
 You'll need make a cable to connect the controller to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't only have 4 pins.
 
-[pic of cable]
+![rj12 cable jack](https://sinkingsensation.com/stuff/renogy/jack.jpg)
+
+That shows the colored wires from my RJ12 cable. I don't know how standard the wire colors are, but as you can see in that pic the first three wires are red, black and white, those are all that's required.
 
 You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.amazon.com/dp/B07BJJ3TZR]:
 
-[pic of converter]
+![level adjuster](https://sinkingsensation.com/stuff/renogy/converter.jpg)
 
 If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual Conversion Module", costs $7.
-
-
-That shows the colored wires from my RJ12 cable. I don't know how standard the wire colors are on those, here's a pic of my jack:
-
-[pic of jack]
-
-Note that I only used the first three wires from the left: the white, black and red wires.
-
 
 ## Notes
 
