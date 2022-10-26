@@ -12,8 +12,6 @@ Here's a pic of my installation:
 
 Here's a wiring diagram:
 
-[wiring diagram]
-
 ![wiring diagram](https://sinkingsensation.com/stuff/renogy/wiring.png)
 
 You'll need make a cable to connect the controller to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't only have 4 pins.
