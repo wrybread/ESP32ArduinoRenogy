@@ -44,7 +44,7 @@ Feel free to post to Issues if not.
 
 - I couldn't power the ESP32 directly from the charge controller, my theory is that it's so low power that the charge controller thinks nothing is connected and shuts off the port. Oh well, I used one of these 12v to 5v adaptors:
 
-[pic]
+![installation](https://sinkingsensation.com/stuff/renogy/12v_to_5v.jpg.jpg)
 
 https://www.amazon.com/gp/product/B08H89LTP5
 
