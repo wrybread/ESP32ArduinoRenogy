@@ -32,9 +32,11 @@ If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual 
 
 ## Use
 
-After connecting the cable and flashing your ESP you should be getting data from your charge controller in Serial Monitor:
+After connecting the cable and flashing your ESP you should be seeing data from your charge controller in Serial Monitor:
 
 ![serial monitor](https://sinkingsensation.com/stuff/renogy/serial_monitor.jpg)
+
+Feel free to post to Issues if not.
 
 ## Notes
 
