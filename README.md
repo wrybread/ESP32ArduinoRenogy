@@ -2,7 +2,9 @@
 
 This lets you get data from Renogy charge controllers via their RS232 port using an ESP32 or Arduino. 
 
-The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me easily overcome that narrow use case, and generally makes Renogy charge controllers super powerful. And without using something relatively heavy like a Raspberry Pi.
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me easily overcome that narrow use case, and generally makes Renogy charge controllers super powerful. And without using something relatively heavy like a Raspberry Pi
+
+So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more. 
 
 Here's a pic of my installation:
 
@@ -54,7 +56,18 @@ Much thanks to them! They made this much easier.
 
 I also attached Renogy's manual, it's somewhat helpful if you squint at it long enough.
 
+## Tested On
 
+So far it's been tested and confirmed working well on these controllers:
+
+- Wanderer 30A (CTRL-WND30-LI)
+- Wanderer 10A
+ 
+Please post to the Issues section if you test on more. 
+
+## To Do
+
+- I don't think it's correctly reading the serial number register, and possibly some of the other registers having to do with the model number. Please let me know if you figure out any fixes. (wrybread@gmail.com or post to Issues).
 
 
 
