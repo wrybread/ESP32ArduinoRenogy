@@ -2,6 +2,8 @@
 
 This lets you get data from Renogy charge controllers via their RS232 port using an ESP32 or Arduino. 
 
+![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
+
 The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me easily overcome that narrow use case, and generally makes Renogy charge controllers super powerful. And without using something relatively heavy like a Raspberry Pi
 
 So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more. 
@@ -28,6 +30,12 @@ You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.am
 
 If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual Conversion Module", costs $7.
 
+## Use
+
+After connecting the cable and flashing your ESP you should be getting data from your charge controller in Serial Monitor:
+
+![serial monitor](https://sinkingsensation.com/stuff/renogy/serial_monitor.jpg)
+
 ## Notes
 
 - as of now this is untested on an Arduino, I've only used it with ESP32's. It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
@@ -42,7 +50,7 @@ https://www.amazon.com/gp/product/B08H89LTP5
 
 - for the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load pins:
 
-[screenshot of load pins]
+![load modes](https://sinkingsensation.com/stuff/renogy/load_modes.jpg)
 
 ## See Also
 
