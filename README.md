@@ -97,6 +97,13 @@ delay(10000);
 renogy_control_load(0)
 ```
 
+## Notes on the Load Switch
+
+I think the load switch uses a MOSFET, which means anything with an inductive kickback (like a brush motor) might damage the switch or the unit itself. But I've been powering a bilge pump on it, which I think is an inductive load, for weeks without an issue. I'm willing to risk my cheapie PWM charge controller for that, but be careful what you power from the load switch directly.
+
+Renogy is oddly uncommunicative about the limits of the load switch, and my theory is that that's because it's a bit complicated. My theory is that the capacity is shared by the battery input and switch output. So for example if the 10 amp charge controller is pulling 9 amps of power from the solar panels, that leaves only 1 amp for the load switch. That would explain both why they don't mention the actual load, and why they only let us control the load at night (when the load switch would have all the rated power). But still, it would be nice for them to mention that. And furthermore having options to control the load switch in the day would allow for someone to either have a larger controller than their panel so daytime power wouldn't be an issue, or to just use a relay connected to the load switch.
+
+Anyway you can of course just connect a relay to your ESP or Arduino to bypass all these issues.
 
 ## General Notes
 
