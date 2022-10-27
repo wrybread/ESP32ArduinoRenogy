@@ -40,14 +40,59 @@ After connecting the cable as in the wiring diagram above and flashing your ESP 
 
 Feel free to post to Issues if not.
 
-Note the commented out section in the code that turns the load on and off. For example this would turn the load on for 10 seconds:
+## Notes on the Code
 
+There's a struct that holds all the info from the charge controller. A look at the struct shows what data that is:
+
+```
+struct Controller_data {
+  
+  uint8_t battery_soc;               // percent
+  float battery_voltage;             // volts
+  float battery_charging_amps;       // amps
+  uint8_t battery_temperature;       // celcius
+  uint8_t controller_temperature;    // celcius
+  float load_voltage;                // volts
+  float load_amps;                   // amps
+  uint8_t load_watts;                // watts
+  float solar_panel_voltage;         // volts
+  float solar_panel_amps;            // amps
+  uint8_t solar_panel_watts;         // watts
+  float min_battery_voltage_today;   // volts
+  float max_battery_voltage_today;   // volts
+  float max_charging_amps_today;     // amps
+  float max_discharging_amps_today;  // amps
+  uint8_t max_charge_watts_today;    // watts
+  uint8_t max_discharge_watts_today; // watts
+  uint8_t charge_amphours_today;     // amp hours
+  uint8_t discharge_amphours_today;  // amp hours
+  uint8_t charge_watthours_today;    // watt hours
+  uint8_t discharge_watthours_today; // watt hours
+  uint8_t controller_uptime_days;    // days
+  uint8_t total_battery_overcharges; // count
+  uint8_t total_battery_fullcharges; // count
+
+  // convenience values
+  float battery_temperatureF;        // fahrenheit
+  float controller_temperatureF;     // fahrenheit
+  float battery_charging_watts;      // watts. necessary? Does it ever differ from solar_panel_watts?
+  long last_update_time;             // millis() of last update time
+};
+Controller_data renology_data;
+```
+
+For example it gets the battery_soc (battery state of charge), the battery_voltage, etc.
+
+And note the commented out section in the code that turns the load on and off. For example this would turn the load on for 10 seconds:
+
+```
 renogy_control_load(1)
 delay(10000);
 renogy_control_load(0)
+```
 
 
-## Notes
+## General Notes
 
 - as of now this is untested on an Arduino, I've only used it with ESP32's (both a Rover and a Wroom). It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
 
@@ -55,13 +100,13 @@ renogy_control_load(0)
 
 ![12v to 5v](https://sinkingsensation.com/stuff/renogy/12v_to_5v.jpg)
 
-- This can also turn on the load terminals, but I'm not sure what their load limit is. The bilge pump I'm powering pulls 30 watts sometimes, which might be pushing it... So far so good though. I had originally planned to power the pump with a separate relay but the onboard load pins seem to do fine.
-
+- This can also turn on the load switch, but I'm not sure what their load limit is. The bilge pump I'm powering pulls about 30 watts / 2.5 amps and so far no problem. I think the load switch uses a MOSFET, which means it wants a resistive load, but I think my bilge pump uses a brush motor, which is inductive. I guess time will tell if the inductive kickback will damage the pins. Note that if someone wants to power an inductive load safely they could always use a relay.
+- 
 - for the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load pins:
 
 ![load modes](https://sinkingsensation.com/stuff/renogy/load_modes.jpg)
 
-Such an odd limitation to make them only apply to lights.
+Such an odd limitation to make them only apply to lights. Oh well, nothing an ESP32 can't fix.
 
 ## See Also
 
