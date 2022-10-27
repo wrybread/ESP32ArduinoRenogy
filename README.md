@@ -40,6 +40,13 @@ After connecting the cable as in the wiring diagram above and flashing your ESP 
 
 Feel free to post to Issues if not.
 
+Note the commented out section in the code that turns the load on and off. For example this would turn the load on for 10 seconds:
+
+renogy_control_load(1)
+delay(10000);
+renogy_control_load(0)
+
+
 ## Notes
 
 - as of now this is untested on an Arduino, I've only used it with ESP32's (both a Rover and a Wroom). It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
