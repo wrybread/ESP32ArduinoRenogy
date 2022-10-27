@@ -6,7 +6,7 @@ This lets you read data from Renogy charge controllers via their RS232 port usin
 
 The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from a solar panel, and I was surprised to learn that the load switch on the Renogy controllers can't do that natively. The load switch is only designed to control lights at night. Silly. This lets me use the load switch to power other devices like a bilge pump during the day for one minute an hour when there's sufficient power. 
 
-(See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea).
+(See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea.)
 
 So far I've only tested this with Renogy Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A charge controllers, please post to the Issues section if you test on more and I'll add it to the list below. It *should* work with any Renogy charge controller that has an RS232 port, which I think is all of them since they want to sell you their bluetooth module that works with that port.
 
