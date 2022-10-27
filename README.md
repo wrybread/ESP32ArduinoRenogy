@@ -83,7 +83,11 @@ struct Controller_data {
 Controller_data renology_data;
 ```
 
-For example it gets the battery_soc (battery state of charge), the battery_voltage, the battery_charging_amps, etc.
+For example it gets the battery_soc (battery state of charge), the battery_voltage, the battery_charging_amps, etc. There's examples in the code of how to access them, but for example you get the battery voltage like this:
+
+```
+String( renology_data.battery_voltage );
+```
 
 There's another struct that holds the info about the charge controller (it's voltage rating, amp rating, serial number, etc). I don't think all those are working yet. For example the serial number it reports is different than the one printed on my charge controller, which I think is just because of how my code processes the serial number data, but I don't need that functionality so I haven't fixed that yet. 
 
