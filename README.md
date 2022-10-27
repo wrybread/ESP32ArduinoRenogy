@@ -6,7 +6,7 @@ This lets you get data from Renogy charge controllers via their RS232 port using
 
 The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from a solar panel, and I was surprised to learn that the load switch on the Renogy controllers can't do that natively. The load switch is only designed to control lights at night. Silly. This lets me use the load switch to power other devices like a bilge pump during the day for one minute an hour when there's sufficient power. 
 
-(Note: I think the load switch uses a MOSFET, so anything with an inductive kickback like a brush motor might damange the switch. So I don't necessarily recommend using the load switch to power a pump as I am, but this makes it super easy to use a relay connected to your ESP32 or Arduino for those loads. I've been running this bilge pump for weeks without issue though).
+(See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea).
 
 Another nice thing about this project is that it doesn't require a relatively heavy computer like a Raspberry Pi. An ESP32 uses less than 1/10th the power of a Pi, even less if you use deep sleep, is instantly on with no slow bootup times, has no SD card to get corrupted, doesn't need to be shutdown properly, and you don't need to worry about keeping its OS up to date. Once you get it all working it just works, for years and years. There are times when a Pi is the better choice, but a remote system installed in a cooler next to a pond for a decade isn't one of them, ha.
 
