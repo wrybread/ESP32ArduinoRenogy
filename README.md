@@ -106,7 +106,9 @@ renogy_control_load(0)
 
 ![load modes](https://sinkingsensation.com/stuff/renogy/load_modes.jpg)
 
-Such an odd limitation to make them only apply to lights. Oh well, nothing an ESP32 can't fix.
+It's also interesting to note that according to the manual the charge controller will show a fault code if the draw of the load pins exceeds the capacity by 105%. But they don't tell us what that capacity is...
+
+Such an odd limitation to design them only to handle lights. Oh well, nothing an ESP32 can't fix.
 
 ## See Also
 
