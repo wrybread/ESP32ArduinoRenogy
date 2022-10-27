@@ -42,7 +42,7 @@ Feel free to post to Issues if not.
 
 ## Notes on the Code
 
-There's a struct that holds all the info from the charge controller. A look at the struct shows what data that is:
+There's a struct that holds all the data from the charge controller. A look at the struct shows what data that is:
 
 ```
 struct Controller_data {
