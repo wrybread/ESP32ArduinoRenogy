@@ -83,7 +83,7 @@ Please post to the Issues section if you test on other Renogy charge controllers
 
 - I don't think it's correctly reading the serial number register, and possibly some of the other registers having to do with the model number. Please let me know if you figure out any fixes. (wrybread@gmail.com or post to Issues).
 
-- would be nice to add Bluetooth support for monitoring from a phone and posting to MQTT brokers.
+- would be nice to add Bluetooth support for monitoring from a phone, posting to MQTT brokers and pvwatts, etc.
 
 
 
