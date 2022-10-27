@@ -26,7 +26,7 @@ Here's the RJ12 jack on my cable, note how there's 6 wires (white, black, red, g
 
 ![rj12 cable jack](https://sinkingsensation.com/stuff/renogy/jack.jpg)
 
-I don't know how standard the wire colors are but those are the colors on mine. You need the first 3 wires from the left, which on mine are the red, black and white wire.
+I don't know how standard the wire colors are but those are the colors on mine. You need the first 3 wires from the left, which on mine are the white, black and red wire.
 
 You'll also need a TTL to RS232 level adjuster. I used [this one](https://www.amazon.com/dp/B07BJJ3TZR) but there are lots of other options (google "max3232"):
 
