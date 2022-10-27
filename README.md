@@ -4,9 +4,9 @@ This lets you get data from Renogy charge controllers via their RS232 port using
 
 ![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
 
-The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me easily overcome that narrow use case, and generally makes Renogy charge controllers super powerful. And without using something relatively heavy like a Raspberry Pi
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me use the power pins to power other devices like a pump during the day when there is sufficient power. And without the need for a relatively heavy small computer like a Raspberry Pi.
 
-So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more. 
+So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more and I'll add it to the list below. 
 
 Here's a pic of my installation:
 
@@ -18,13 +18,15 @@ Here's a wiring diagram:
 
 ![wiring diagram](https://sinkingsensation.com/stuff/renogy/wiring.png)
 
-You'll need make a cable to connect the controller to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't only have 4 pins.
+You'll need make a cable to connect the controller to your ESP32 or Arduino. Start with an RJ12 cable, which is an old phone cable with 6 pins. Make sure it doesn't have only 4 wires, which is an RJ11 cable.
+
+Here's the RJ12 jack on my cable, note how there's 6 wires:
 
 ![rj12 cable jack](https://sinkingsensation.com/stuff/renogy/jack.jpg)
 
-That shows the colored wires from my RJ12 cable. I don't know how standard the wire colors are, but as you can see in that pic the first three wires are red, black and white, those are all that's required.
+I don't know how standard the wire colors are, but as you can see in that pic the first three wires from left are red, black and white, those are all that's required.
 
-You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.amazon.com/dp/B07BJJ3TZR]:
+You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.amazon.com/dp/B07BJJ3TZR] but there are lots of other options:
 
 ![level adjuster](https://sinkingsensation.com/stuff/renogy/converter.jpg)
 
@@ -32,7 +34,7 @@ If the listing goes away, it's the "NOYITO TTL to RS232 Module TTL RS232 Mutual 
 
 ## Use
 
-After connecting the cable and flashing your ESP you should be seeing data from your charge controller in Serial Monitor:
+After connecting the cable as in the wiring diagram above and flashing your ESP you should be seeing data from your charge controller in Serial Monitor:
 
 ![serial monitor](https://sinkingsensation.com/stuff/renogy/serial_monitor.jpg)
 
@@ -40,19 +42,19 @@ Feel free to post to Issues if not.
 
 ## Notes
 
-- as of now this is untested on an Arduino, I've only used it with ESP32's. It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
+- as of now this is untested on an Arduino, I've only used it with ESP32's (both Rovers and Wroom). It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
 
 - I couldn't power the ESP32 directly from the charge controller, my theory is that it's so low power that the charge controller thinks nothing is connected and shuts off the port. Oh well, I used one of (these)[https://www.amazon.com/gp/product/B08H89LTP5] 12v to 5v adaptors:
 
 ![12v to 5v](https://sinkingsensation.com/stuff/renogy/12v_to_5v.jpg)
 
-https://www.amazon.com/gp/product/B08H89LTP5
-
-- This can also turn on the load terminals, but I'm not sure what their load limit is. The pump I'm powering pulls 30 watts sometimes, which might be pushing it... So far so good though. I had originally planned to power the pump with a separate relay but the onboard load pins seem to do fine.
+- This can also turn on the load terminals, but I'm not sure what their load limit is. The bilge pump I'm powering pulls 30 watts sometimes, which might be pushing it... So far so good though. I had originally planned to power the pump with a separate relay but the onboard load pins seem to do fine.
 
 - for the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load pins:
 
 ![load modes](https://sinkingsensation.com/stuff/renogy/load_modes.jpg)
+
+Such an odd limitation to make them only apply to lights.
 
 ## See Also
 
