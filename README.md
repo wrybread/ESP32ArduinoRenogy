@@ -1,14 +1,12 @@
 # ESP32ArduinoRenogy
 
-This lets you get data from Renogy charge controllers via their RS232 port using an ESP32 or Arduino. 
+This lets you read data from Renogy charge controllers via their RS232 port using an ESP32 or Arduino. 
 
 ![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
 
 The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from a solar panel, and I was surprised to learn that the load switch on the Renogy controllers can't do that natively. The load switch is only designed to control lights at night. Silly. This lets me use the load switch to power other devices like a bilge pump during the day for one minute an hour when there's sufficient power. 
 
 (See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea).
-
-Another nice thing about this project is that it doesn't require a relatively heavy computer like a Raspberry Pi. An ESP32 uses less than 1/10th the power of a Pi, even less if you use deep sleep, is instantly on with no slow bootup times, has no SD card to get corrupted, doesn't need to be shutdown properly, and you don't need to worry about keeping its OS up to date. Once you get it all working it just works, for years and years. There are times when a Pi is the better choice, but a remote system installed in a cooler next to a pond for a decade isn't one of them, ha.
 
 So far I've only tested this with Renogy Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A charge controllers, please post to the Issues section if you test on more and I'll add it to the list below. It *should* work with any Renogy charge controller that has an RS232 port, which I think is all of them since they want to sell you their bluetooth module that works with that port.
 
@@ -131,9 +129,9 @@ There's a couple of other projects that get data from the Renogy charge controll
 
 - [here's a pure javascript project](https://github.com/menloparkinnovation/renogy-rover)
 
-Much thanks to them! They made this much easier.
+Much thanks to them! They made this much easier. For my use case a Raspberry Pi is vastly overkill and has a lot of drawbacks: about 10 times the power of an ESP, slow bootup times, corruptible SD card, needs to be shutdown properly, has an OS which needs to be kept up to date, etc. ESP32's are in general much more robust in my experience. Once you get it all working it just works, for decades. That's not to say there aren't times where a Pi or similar makes more sense of course.
 
-I also attached Renogy's manual, it's somewhat helpful if you squint at it long enough.
+I also attached Renogy's RS232 manual, it's somewhat helpful if you squint at it long enough.
 
 ## Tested On
 
