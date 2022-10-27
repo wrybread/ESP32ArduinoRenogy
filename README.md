@@ -26,7 +26,7 @@ Here's the RJ12 jack on my cable, note how there's 6 wires:
 
 I don't know how standard the wire colors are, but as you can see in that pic the first three wires from left are red, black and white, those are all that's required.
 
-You'll also need a TTL to RS232 level adjuster. I used (this one)[https://www.amazon.com/dp/B07BJJ3TZR] but there are lots of other options:
+You'll also need a TTL to RS232 level adjuster. I used [this one](https://www.amazon.com/dp/B07BJJ3TZR) but there are lots of other options:
 
 ![level adjuster](https://sinkingsensation.com/stuff/renogy/converter.jpg)
 
