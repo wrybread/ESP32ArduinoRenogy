@@ -4,7 +4,7 @@ This lets you read data from Renogy charge controllers via their RS232 port usin
 
 ![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
 
-The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from a solar panel, and I was surprised to learn that the load switch on the Renogy controllers can't do that natively. The load switch is only designed to control lights at night. Silly. This lets me use the load switch to power other devices like a bilge pump during the day for one minute an hour when there's sufficient power. 
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from a solar panel, and I was surprised to learn that the load switch on the Renogy controllers can't do that natively. The load switch is only designed to control lights at night. Silly. This lets me use the load switch to power other devices like a bilge pump during the day for one minute an hour when there's sufficient power. And of course it lets me use the data from the Renogy charge controller to do anyting else I want as well.
 
 (See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea.)
 
