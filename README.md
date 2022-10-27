@@ -60,9 +60,9 @@ Such an odd limitation to make them only apply to lights.
 
 There's a couple of other projects that get data from the Renogy charge controllers. Oddly I couldn't find anything that uses an ESP32 or Arduino though.
 
-- here's a NodeJS project
+- [here's a NodeJS project](https://github.com/mickwheelz/NodeRenogy)
 
-- here's a pure javascript project
+- [here's a pure javascript project](https://github.com/menloparkinnovation/renogy-rover)
 
 Much thanks to them! They made this much easier.
 
