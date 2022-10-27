@@ -4,9 +4,9 @@ This lets you get data from Renogy charge controllers via their RS232 port using
 
 ![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
 
-The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the power pins on the Renogy controllers can't do that natively. The power pins are only designed to control lights at night. Silly. This lets me use the power pins to power other devices like a pump during the day when there is sufficient power. And without the need for a relatively heavy small computer like a Raspberry Pi.
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the load pins on the Renogy controllers can't do that natively. The load pins are only designed to control lights at night. Silly. This lets me use the load pins to power other devices like a bilge pump during the day for one minute an hour when there is sufficient power. And without the need for a relatively heavy small computer like a Raspberry Pi. An ESP32 uses less than 1/10th the power of a Pi, even less if you use deep sleep, has no slow bootup times, there's no SD card to get corrupted, and you don't need to worry about keeping an OS up to date. Once you get it all working it just works, for years and years. 
 
-So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more and I'll add it to the list below. 
+So far I've only tested this with Renogy Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A charge controllers, please post to the Issues section if you test on more and I'll add it to the list below. It *should* work with any Renogy charge controller that has an RS232 port, which I think is all of them since they want to sell you their bluetooth module that works with that port.
 
 Here's a pic of my installation:
 
@@ -80,6 +80,10 @@ Please post to the Issues section if you test on more.
 ## To Do
 
 - I don't think it's correctly reading the serial number register, and possibly some of the other registers having to do with the model number. Please let me know if you figure out any fixes. (wrybread@gmail.com or post to Issues).
+
+- connect to phone via bluetooth for monitoring with a phone
+
+
 
 
 
