@@ -4,7 +4,7 @@ This lets you get data from Renogy charge controllers via their RS232 port using
 
 ![Wanderer](https://sinkingsensation.com/stuff/renogy/wanderer.jpg)
 
-The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the Renogy controllers don't have that ability natively. Their power pins seem to only want to control lights at night. Silly. This lets me use the power pins to power other devices like a pump during the day when there is sufficient power. And without the need for a relatively heavy small computer like a Raspberry Pi.
+The inspiration came when I needed to power a pump at a remote pond whenever there was sufficient power from the solar panel, and I was surprised to learn that the power pins on the Renogy controllers can't do that natively. The power pins are only designed to control lights at night. Silly. This lets me use the power pins to power other devices like a pump during the day when there is sufficient power. And without the need for a relatively heavy small computer like a Raspberry Pi.
 
 So far it's only been tested on cheapie Wanderer 30A (CTRL-WND30-LI), and Wanderer 10A controllers, please post to the Issues section if you test on more and I'll add it to the list below. 
 
