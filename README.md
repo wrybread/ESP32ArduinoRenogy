@@ -26,7 +26,7 @@ Here's the RJ12 jack on my cable, note how there's 6 wires (white, black, red, g
 
 I don't know how standard the wire colors are but those are the colors on mine. You need the first 3 wires from the left, which on mine are the red, black and white wire.
 
-You'll also need a TTL to RS232 level adjuster. I used [this one](https://www.amazon.com/dp/B07BJJ3TZR) but there are lots of other options:
+You'll also need a TTL to RS232 level adjuster. I used [this one](https://www.amazon.com/dp/B07BJJ3TZR) but there are lots of other options (google "max3232"):
 
 ![level adjuster](https://sinkingsensation.com/stuff/renogy/converter.jpg)
 
@@ -74,14 +74,18 @@ So far it's been tested and confirmed working well on these controllers:
 
 - Wanderer 30A (CTRL-WND30-LI)
 - Wanderer 10A
+
+It *should* work on any Renogy charge controller with an RS232 port. And most if not all of them have that port since Renogy wants to sell their [bluetooth module](https://www.renogy.com/bt-2-bluetooth-module/), which uses that port to get its data. This should also be pretty easy to adapt to other charge controllers that make their data available via modbus.
  
-Please post to the Issues section if you test on more. 
+Please post to the Issues section if you test on other Renogy charge controllers, or email me (wrybread@gmail.com). 
 
 ## To Do
 
 - I don't think it's correctly reading the serial number register, and possibly some of the other registers having to do with the model number. Please let me know if you figure out any fixes. (wrybread@gmail.com or post to Issues).
 
-- connect to phone via bluetooth for monitoring with a phone
+- would be nice to add Bluetooth support for monitoring from a phone
+
+- 
 
 
 
