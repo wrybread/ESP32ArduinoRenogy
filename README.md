@@ -44,7 +44,7 @@ Feel free to post to Issues if not.
 
 - as of now this is untested on an Arduino, I've only used it with ESP32's (both Rovers and Wroom). It should work fine with an Arduino, the only thing I'm not sure about is whether you can have two Serial interfaces with all Arduinos (and this script uses one Serial interface for communication with the Renogy controller and one to print status to the console). It should work fine though. If you test with an Arduino please post to this project's Issues section.
 
-- I couldn't power the ESP32 directly from the charge controller, my theory is that it's so low power that the charge controller thinks nothing is connected and shuts off the port. Oh well, I used one of (these)[https://www.amazon.com/gp/product/B08H89LTP5] 12v to 5v adaptors:
+- I couldn't power the ESP32 directly from the charge controller, my theory is that it's so low power that the charge controller thinks nothing is connected and shuts off the port. Oh well, I used one of [these](https://www.amazon.com/gp/product/B08H89LTP5) 12v to 5v adaptors:
 
 ![12v to 5v](https://sinkingsensation.com/stuff/renogy/12v_to_5v.jpg)
 
