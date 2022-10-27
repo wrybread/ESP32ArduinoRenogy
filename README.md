@@ -8,7 +8,7 @@ The inspiration came when I needed to power a pump at a remote pond whenever the
 
 (See "Notes on the Load Switch" below, it's possible that my powering a pump directly from the load switch isn't a good idea.)
 
-So far I've only tested this with Renogy Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A charge controllers, please post to the Issues section if you test on more and I'll add it to the list below. It *should* work with any Renogy charge controller that has an RS232 port, which I think is all of them since they want to sell you their bluetooth module that works with that port.
+So far I've only tested this with Renogy Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A charge controllers, please post to the Issues section if you test on more and I'll add it to the list below. It *should* work with any Renogy charge controller that has an RS232 port, which I think is all of them since they want to sell you their [bluetooth module](https://www.renogy.com/bt-2-bluetooth-module/) that works with the RS232 port.
 
 Here's a pic of my installation:
 
