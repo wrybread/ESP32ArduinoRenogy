@@ -102,8 +102,8 @@ renogy_control_load(0)
 
 ![12v to 5v](https://sinkingsensation.com/stuff/renogy/12v_to_5v.jpg)
 
-- This can also turn on the load switch, but I'm not sure what their load limit is. The bilge pump I'm powering pulls about 30 watts / 2.5 amps and so far no problem. I think the load switch uses a MOSFET, which means it wants a resistive load, but I think my bilge pump uses a brush motor, which is inductive. I guess time will tell if the inductive kickback will damage the pins. Note that if someone wants to power an inductive load safely they could always use a relay.
-- 
+- This can also turn on the load switch, but I'm not sure what their load limit is. The bilge pump I'm powering pulls about 30 watts / 2.5 amps and so far no problem. I think the load switch uses a MOSFET, which means it wants a resistive load, but I think my bilge pump uses a brush motor, which is inductive. I guess time will tell if the inductive kickback will damage the pins. Note that if someone wants to power an inductive load safely they could always use a relay, or just connect the relay directly to the EsP32/Arduino of course.
+
 - for the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load pins:
 
 ![load modes](https://sinkingsensation.com/stuff/renogy/load_modes.jpg)
