@@ -83,7 +83,7 @@ Controller_data renology_data;
 
 For example it gets the battery_soc (battery state of charge), the battery_voltage, the battery_charging_amps, etc.
 
-There's another struct that holds the info about the charge controller. I don't think all those are working yet. For example the serial number it reports is different than the one printed on my charge controller. I think that's just the way my code processes the serial number data, but I don't need that functionality so I haven't fixed that yet. 
+There's another struct that holds the info about the charge controller (it's voltage rating, amp rating, serial number, etc). I don't think all those are working yet. For example the serial number it reports is different than the one printed on my charge controller, which I think is just because of how my code processes the serial number data, but I don't need that functionality so I haven't fixed that yet. 
 
 And note the commented out section in the code that turns the load on and off. For example this would turn the load on for 10 seconds:
 
