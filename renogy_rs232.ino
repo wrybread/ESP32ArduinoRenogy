@@ -1,6 +1,6 @@
 /*
 
-Reads the data from the Renology charge controller. Tested with Wanderer 30A (CTRL-WND30-LI)
+Reads the data from the Renogy charge controller via it's RS232 port using an ESP32 or similar. Tested with Wanderer 30A (CTRL-WND30-LI) and Wanderer 10A
 
 See my Github repo for notes on building the cable:
 https://github.com/wrybread/ESP32ArduinoRenogy
@@ -40,7 +40,7 @@ const uint32_t num_data_registers = 35;
 const uint32_t num_info_registers = 17;
 
 
-// if you don't have a charge controller to test with, can set this to true to get non 0 readings
+// if you don't have a charge controller to test with, can set this to true to get non 0 voltage readings
 bool simulator_mode = false;
 
 
@@ -67,7 +67,7 @@ struct Controller_data {
   float min_battery_voltage_today;   // volts
   float max_battery_voltage_today;   // volts
   float max_charging_amps_today;     // amps
-  float max_discharging_amps_today;   // amps
+  float max_discharging_amps_today;  // amps
   uint8_t max_charge_watts_today;    // watts
   uint8_t max_discharge_watts_today; // watts
   uint8_t charge_amphours_today;     // amp hours
@@ -79,12 +79,13 @@ struct Controller_data {
   uint8_t total_battery_fullcharges; // count
 
   // convenience values
-  float battery_temperatureF;       // fahrenheit
-  float controller_temperatureF;    // fahrenheit
+  float battery_temperatureF;        // fahrenheit
+  float controller_temperatureF;     // fahrenheit
   float battery_charging_watts;      // watts. necessary? Does it ever differ from solar_panel_watts?
   long last_update_time;             // millis() of last update time
+  bool controller_connected;         // bool if we successfully read data from the controller
 };
-Controller_data renology_data;
+Controller_data renogy_data;
 
 
 // A struct to hold the controller info params
@@ -103,7 +104,7 @@ struct Controller_info {
   float wattage_rating;
   long last_update_time;           // millis() of last update time
 };
-Controller_info renology_info;
+Controller_info renogy_info;
 
 
 
@@ -138,11 +139,11 @@ void loop()
   renogy_read_data_registers();
   renogy_read_info_registers();
 
-  Serial.println("Battery voltage: " + String(renology_data.battery_voltage));
-  Serial.println("Battery charge level: " + String(renology_data.battery_soc) + "%");
-  Serial.println("Panel wattage: " + String(renology_data.solar_panel_watts));
-  Serial.println("controller_temperatureF=" + String(renology_data.controller_temperatureF)); 
-  Serial.println("battery_temperatureF=" + String(renology_data.battery_temperatureF));
+  Serial.println("Battery voltage: " + String(renogy_data.battery_voltage));
+  Serial.println("Battery charge level: " + String(renogy_data.battery_soc) + "%");
+  Serial.println("Panel wattage: " + String(renogy_data.solar_panel_watts));
+  Serial.println("controller_temperatureF=" + String(renogy_data.controller_temperatureF)); 
+  Serial.println("battery_temperatureF=" + String(renogy_data.battery_temperatureF));
   Serial.println("---");
 
 
@@ -172,47 +173,48 @@ void renogy_read_data_registers()
   if (result == node.ku8MBSuccess)
   {
     if (print_data) Serial.println("Successfully read the data registers!");
+    renogy_data.controller_connected = true;
     for (j = 0; j < num_data_registers; j++)
     {
       data_registers[j] = node.getResponseBuffer(j);
       if (print_data) Serial.println(data_registers[j]);
     }
 
-    renology_data.battery_soc = data_registers[0]; 
-    renology_data.battery_voltage = data_registers[1] * .1; // will it crash if data_registers[1] doesn't exist?
-    renology_data.battery_charging_amps = data_registers[2] * .1;
+    renogy_data.battery_soc = data_registers[0]; 
+    renogy_data.battery_voltage = data_registers[1] * .1; // will it crash if data_registers[1] doesn't exist?
+    renogy_data.battery_charging_amps = data_registers[2] * .1;
 
-    renology_data.battery_charging_watts = renology_data.battery_voltage * renology_data.battery_charging_amps;
+    renogy_data.battery_charging_watts = renogy_data.battery_voltage * renogy_data.battery_charging_amps;
     
     //0x103 returns two bytes, one for battery and one for controller temp in c
     uint16_t raw_data = data_registers[3]; // eg 5913
-    renology_data.controller_temperature = raw_data/256;
-    renology_data.battery_temperature = raw_data%256; 
+    renogy_data.controller_temperature = raw_data/256;
+    renogy_data.battery_temperature = raw_data%256; 
     // for convenience, fahrenheit versions of the temperatures
-    renology_data.controller_temperatureF = (renology_data.controller_temperature * 1.8)+32;
-    renology_data.battery_temperatureF = (renology_data.battery_temperature * 1.8)+32;
+    renogy_data.controller_temperatureF = (renogy_data.controller_temperature * 1.8)+32;
+    renogy_data.battery_temperatureF = (renogy_data.battery_temperature * 1.8)+32;
 
-    renology_data.load_voltage = data_registers[4] * .1;
-    renology_data.load_amps = data_registers[5] * .01;
-    renology_data.load_watts = data_registers[6];
-    renology_data.solar_panel_voltage = data_registers[7] * .1;
-    renology_data.solar_panel_amps = data_registers[8] * .01;
-    renology_data.solar_panel_watts = data_registers[9];
+    renogy_data.load_voltage = data_registers[4] * .1;
+    renogy_data.load_amps = data_registers[5] * .01;
+    renogy_data.load_watts = data_registers[6];
+    renogy_data.solar_panel_voltage = data_registers[7] * .1;
+    renogy_data.solar_panel_amps = data_registers[8] * .01;
+    renogy_data.solar_panel_watts = data_registers[9];
      //Register 0x10A - Turn on load, write register, unsupported in wanderer - 10
-    renology_data.min_battery_voltage_today = data_registers[11] * .1;
-    renology_data.max_battery_voltage_today = data_registers[12] * .1; 
-    renology_data.max_charging_amps_today = data_registers[13] * .01;
-    renology_data.max_discharging_amps_today = data_registers[14] * .1;
-    renology_data.max_charge_watts_today = data_registers[15];
-    renology_data.max_discharge_watts_today = data_registers[16];
-    renology_data.charge_amphours_today = data_registers[17];
-    renology_data.discharge_amphours_today = data_registers[18];
-    renology_data.charge_watthours_today = data_registers[19];
-    renology_data.discharge_watthours_today = data_registers[20];
-    renology_data.controller_uptime_days = data_registers[21];
-    renology_data.total_battery_overcharges = data_registers[22];
-    renology_data.total_battery_fullcharges = data_registers[23];
-    renology_data.last_update_time = millis();
+    renogy_data.min_battery_voltage_today = data_registers[11] * .1;
+    renogy_data.max_battery_voltage_today = data_registers[12] * .1; 
+    renogy_data.max_charging_amps_today = data_registers[13] * .01;
+    renogy_data.max_discharging_amps_today = data_registers[14] * .1;
+    renogy_data.max_charge_watts_today = data_registers[15];
+    renogy_data.max_discharge_watts_today = data_registers[16];
+    renogy_data.charge_amphours_today = data_registers[17];
+    renogy_data.discharge_amphours_today = data_registers[18];
+    renogy_data.charge_watthours_today = data_registers[19];
+    renogy_data.discharge_watthours_today = data_registers[20];
+    renogy_data.controller_uptime_days = data_registers[21];
+    renogy_data.total_battery_overcharges = data_registers[22];
+    renogy_data.total_battery_fullcharges = data_registers[23];
+    renogy_data.last_update_time = millis();
 
     // Add these registers:
     //Registers 0x118 to 0x119- Total Charging Amp-Hours - 24/25    
@@ -236,18 +238,19 @@ void renogy_read_data_registers()
       Serial.println(result, HEX); // E2 is timeout
     }
     // Reset some values if we don't get a reading
-    renology_data.battery_voltage = 0; 
-    renology_data.battery_charging_amps = 0;
-    renology_data.battery_soc = 0;
-    renology_data.battery_charging_amps = 0;
-    renology_data.controller_temperature = 0;
-    renology_data.battery_temperature = 0;    
-    renology_data.solar_panel_amps = 0;
-    renology_data.solar_panel_watts = 0;
-    renology_data.battery_charging_watts = 0;
+    renogy_data.controller_connected = false;
+    renogy_data.battery_voltage = 0; 
+    renogy_data.battery_charging_amps = 0;
+    renogy_data.battery_soc = 0;
+    renogy_data.battery_charging_amps = 0;
+    renogy_data.controller_temperature = 0;
+    renogy_data.battery_temperature = 0;    
+    renogy_data.solar_panel_amps = 0;
+    renogy_data.solar_panel_watts = 0;
+    renogy_data.battery_charging_watts = 0;
     if (simulator_mode) {
-      renology_data.battery_voltage = 13.99;    
-      renology_data.battery_soc = 55; 
+      renogy_data.battery_voltage = 13.99;    
+      renogy_data.battery_soc = 55; 
     }
   }
 
@@ -279,18 +282,18 @@ void renogy_read_info_registers()
     //Register 0x0A - Controller voltage and Current Rating - 0
     // Not sure if this is correct. I get the correct amp rating for my Wanderer 30 (30 amps), but I get a voltage rating of 0 (should be 12v)
     raw_data = info_registers[0]; 
-    renology_info.voltage_rating = raw_data/256; 
-    renology_info.amp_rating = raw_data%256;
-    renology_info.wattage_rating = renology_info.voltage_rating * renology_info.amp_rating;
+    renogy_info.voltage_rating = raw_data/256; 
+    renogy_info.amp_rating = raw_data%256;
+    renogy_info.wattage_rating = renogy_info.voltage_rating * renogy_info.amp_rating;
     //Serial.println("raw ratings = " + String(raw_data));
-    //Serial.println("Voltage rating: " + String(renology_info.voltage_rating));
-    //Serial.println("amp rating: " + String(renology_info.amp_rating));
+    //Serial.println("Voltage rating: " + String(renogy_info.voltage_rating));
+    //Serial.println("amp rating: " + String(renogy_info.amp_rating));
 
 
     //Register 0x0B - Controller discharge current and type - 1
     raw_data = info_registers[1]; 
-    renology_info.discharge_amp_rating = raw_data/256; // not sure if this should be /256 or /100
-    renology_info.type = raw_data%256; // not sure if this should be /256 or /100
+    renogy_info.discharge_amp_rating = raw_data/256; // not sure if this should be /256 or /100
+    renogy_info.type = raw_data%256; // not sure if this should be /256 or /100
 
     //Registers 0x0C to 0x13 - Product Model String - 2-9
     // Here's how the nodeJS project handled this:
@@ -308,26 +311,26 @@ void renogy_read_info_registers()
     itoa(info_registers[10],buffer1,10); 
     itoa(info_registers[11],buffer2,10);
     strcat(buffer1, buffer2); // should put a divider between the two strings?
-    strcpy(renology_info.software_version, buffer1); 
-    //Serial.println("Software version: " + String(renology_info.software_version));
+    strcpy(renogy_info.software_version, buffer1); 
+    //Serial.println("Software version: " + String(renogy_info.software_version));
 
     //Registers 0x016 to 0x017 - Hardware Version - 12-13
     itoa(info_registers[12],buffer1,10); 
     itoa(info_registers[13],buffer2,10);
     strcat(buffer1, buffer2); // should put a divider between the two strings?
-    strcpy(renology_info.hardware_version, buffer1);
-    //Serial.println("Hardware version: " + String(renology_info.hardware_version));
+    strcpy(renogy_info.hardware_version, buffer1);
+    //Serial.println("Hardware version: " + String(renogy_info.hardware_version));
 
     //Registers 0x018 to 0x019 - Product Serial Number - 14-15
     // I don't think this is correct... Doesn't match serial number printed on my controller
     itoa(info_registers[14],buffer1,10); 
     itoa(info_registers[15],buffer2,10);
     strcat(buffer1, buffer2); // should put a divider between the two strings?
-    strcpy(renology_info.serial_number, buffer1);
-    //Serial.println("Serial number: " + String(renology_info.serial_number)); // (I don't think this is correct)
+    strcpy(renogy_info.serial_number, buffer1);
+    //Serial.println("Serial number: " + String(renogy_info.serial_number)); // (I don't think this is correct)
 
-    renology_info.modbus_address = info_registers[16];
-    renology_info.last_update_time = millis();
+    renogy_info.modbus_address = info_registers[16];
+    renogy_info.last_update_time = millis();
   
     if (print_data) Serial.println("---");
   }
