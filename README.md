@@ -99,13 +99,11 @@ renogy_control_load(0)
 
 ## Notes on the Load Switch
 
-I think the load switch uses a MOSFET, which means anything with an inductive kickback (like a brush motor) might damage the switch or the unit itself. But I've been powering a bilge pump on it, which I think is an inductive load, for weeks without an issue. I'm willing to risk my cheapie PWM charge controller for that, but be careful what you power from the load switch directly. And of course you can connect a relay to the load switch to control anything else, or just connect your relay directly to your Arduino or ESP32.
+I think the load switch uses a MOSFET, which means anything with an inductive kickback (like a brush motor) might damage the switch or the unit itself. But I've been powering a bilge pump on it, which I think is an inductive load, for weeks without an issue. I'm willing to risk my cheapie PWM charge controller for that, but be careful what you power from the load switch directly. And of course you can connect a relay to the load switch to control anything else, or just connect a relay directly to your Arduino or ESP32.
 
 Renogy is oddly uncommunicative about the limits of the load switch, and my theory is that that's because it's a bit complicated. My theory is that the capacity is shared by the battery input and switch output. So for example if the 10 amp charge controller is pulling 9 amps of power from the solar panels, that leaves only 1 amp for the load switch. That would explain both why they don't mention the actual load limit, and why they only let us control the load at night (when the load switch has all the rated power since the sun isn't shining on the panels). But still, it would be nice for them to mention that. And furthermore having options to control the load switch in the day would allow for someone to either have a larger controller than their panel so daytime power wouldn't be an issue, or to just use a relay connected to the load switch. Furthermore the manual says the controller will shut off the load switch and show an error code if the capacity reaches 105%, so maybe exceeding the load limit by a bit isn't catastrophic.
 
 Anyway you can of course bypass all these issues by just controlling a relay directly from your ESP or Arduino.
-
-And all that said, for my project I've been controlling a bilge pump for weeks directly off the load switch, which is an inductive load, but it's been working just fine. For my project I needed to re-establish siphone on a line going from a remote pond to a cow trough once an hour, so I run the pump for a minute every hours in the day while the battery has sufficient charge.
 
 For the record here's a screenshot from the Renogy Wanderer 10a manual showing the modes of the load switch:
 
