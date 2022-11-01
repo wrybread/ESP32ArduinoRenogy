@@ -127,9 +127,9 @@ There's a couple of other projects that get data from the Renogy charge controll
 
 - [here's a pure javascript project](https://github.com/menloparkinnovation/renogy-rover)
 
-Much thanks to them! They made this much easier. For my use case a Raspberry Pi is vastly overkill and has a lot of drawbacks: it needs to be shutdown properly, has a corruptible SD card, uses about 10 times the power of an Arduino or ESP, slow bootup times as opposed to instantly on, has an OS which needs to be kept up to date, etc. ESP32's are in general much more robust in my experience. Once you get it all working it should just work, I'm betting on for decades. That's not to say there aren't times where a Pi or similar makes more sense of course.
+Much thanks to them! They made this much easier. For my use case a Raspberry Pi is vastly overkill and has a lot of drawbacks: it needs to be shutdown properly, has a corruptible SD card, uses about 10 times the power of an Arduino or ESP (and an ESP32 can use deep sleep mode, which is practically no power at all), slow bootup times as opposed to instantly on, has an OS which needs to be kept up to date, costs about 5x as much, etc. ESP32's are in general much more robust in my experience. Once you get it all working it should just work, I'm betting for decades. That's not to say there aren't times where a Pi or similar makes more sense of course, but a remote solar installation probably isn't one of them.
 
-I also attached Renogy's RS232/modbus manual, it's somewhat helpful if you squint at it long enough.
+I also attached Renogy's RS232/modbus manual, it's somewhat occaisonally helpful if you squint at it long enough.
 
 ## Tested On
 
